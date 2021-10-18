@@ -1,0 +1,218 @@
+import React, {Component} from 'react';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  TextInput,
+  Platform,
+  StyleSheet,
+  StatusBar,
+  Alert,
+  Button,
+  SafeAreaView,
+  ScrollView,
+} from 'react-native';
+import Feather from 'react-native-vector-icons/Feather';
+const myIcon = <Feather name="user" size={30} color="#900" />;
+const myIcon2 = <Feather name="lock" size={30} color="#900" />;
+let errormsg_email = null;
+let errormsg_pass = null;
+class SignInScreen extends Component {
+  state = {
+    email: '',
+    password: '',
+    isSecuretextEntry: true,
+    isValidEmail: true,
+    isValidPassword: true,
+  };
+
+  onInputChange = val => {
+    val = val.trim();
+    this.setState({isValidEmail: false});
+    if (val !== '') {
+      const re =
+        /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+      this.setState({isValidEmail: re.test(val)});
+      if (this.state.isValidEmail) {
+        this.setState({email: val});
+      } else {
+        errormsg_email = 'Invalid';
+      }
+    } else {
+      this.setState({isValidEmail: true});
+    }
+  };
+  onPasswordChange = val => {
+    val = val.trim();
+    this.setState({isValidPassword: false});
+    if (val !== '') {
+      const re = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})/;
+      this.setState({isValidPassword: re.test(val)});
+      if (this.state.isValidPassword) {
+        this.setState({password: val});
+      } else {
+        errormsg_pass = 'Password must be Alphanumeric and includes [!@#$%^&*]';
+      }
+    } else {
+      this.setState({isValidPassword: true});
+    }
+  };
+  updateSecureTextEntry = () => {
+    let val = this.state.isSecuretextEntry;
+    this.setState({isSecuretextEntry: !val});
+  };
+  login_handle = e => {
+    e.preventDefault();
+    if (this.state.email === '' && this.state.password === '') {
+      this.setState({isValidEmail: false, isValidPassword: false});
+      errormsg_email = 'Can not be blank!';
+      errormsg_pass = 'Can not be blank!';
+    }
+  };
+  render() {
+    return (
+      <SafeAreaView style={styles.container}>
+        <StatusBar backgroundColor="#e14e51" barStyle="dark-content" />
+        <View style={styles.header}>
+          <Text style={styles.text_header}>Welcome</Text>
+        </View>
+        <View style={styles.footer}>
+          <Text style={styles.text_footer}>Email</Text>
+          <View
+            style={
+              this.state.isValidEmail ? styles.action : styles.actionError
+            }>
+            {myIcon}
+            <TextInput
+              placeholder="Your Email Id..."
+              style={styles.textInput}
+              autoCapitalize="none"
+              onChangeText={val => this.onInputChange(val)}
+            />
+          </View>
+          <Text style={styles.errorMsg}>
+            {this.state.isValidEmail ? null : errormsg_email}
+          </Text>
+          <Text style={styles.text_footer}>Password</Text>
+          <View
+            style={
+              this.state.isValidPassword ? styles.action : styles.actionError
+            }>
+            {myIcon2}
+            <TextInput
+              placeholder="Ex: John@1234"
+              style={styles.textInput}
+              autoCapitalize="none"
+              secureTextEntry={this.state.isSecuretextEntry ? true : false}
+              onChangeText={val => this.onPasswordChange(val)}
+            />
+            <TouchableOpacity
+              style={{marginTop: 10}}
+              onPress={() => this.updateSecureTextEntry()}>
+              {this.state.isSecuretextEntry ? (
+                <Feather name="eye-off" size={20} color="#900" />
+              ) : (
+                <Feather name="eye" size={20} color="#900" />
+              )}
+            </TouchableOpacity>
+          </View>
+          <Text style={styles.errorMsg}>
+            {this.state.isValidPassword ? null : errormsg_pass}
+          </Text>
+          <View style={styles.button}>
+            <Button
+              onPress={e => this.login_handle(e)}
+              title="Sign In"
+              color="#DD0004"
+              accessibilityLabel="you will be logged in"
+              style={styles.signIn}
+            />
+          </View>
+          <View style={styles.button}>
+            <Button
+              onPress={() => this.props.navigation.navigate('Signup')}
+              title="Create Account"
+              color="#DD0004"
+              accessibilityLabel="Go to Create Account"
+              style={styles.signIn}
+            />
+          </View>
+        </View>
+      </SafeAreaView>
+    );
+  }
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#DD0004',
+  },
+  header: {
+    flex: 1,
+    justifyContent: 'flex-end',
+    paddingHorizontal: 20,
+    paddingBottom: 50,
+  },
+  footer: {
+    flex: 3,
+    justifyContent: 'flex-start',
+    backgroundColor: '#fff',
+    borderTopLeftRadius: 30,
+    borderTopRightRadius: 30,
+    paddingHorizontal: 20,
+    paddingVertical: 30,
+  },
+  text_header: {
+    color: '#fff',
+    fontWeight: 'bold',
+    fontSize: 30,
+  },
+  text_footer: {
+    color: '#05375a',
+    fontSize: 18,
+  },
+  action: {
+    flexDirection: 'row',
+    marginTop: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#f2f2f2',
+    paddingBottom: 5,
+    marginBottom: 10,
+  },
+  actionError: {
+    flexDirection: 'row',
+    marginTop: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#FF0000',
+    paddingBottom: 5,
+  },
+  textInput: {
+    flex: 1,
+    marginTop: Platform.OS === 'ios' ? 0 : -12,
+    marginBottom: Platform.OS === 'ios' ? 0 : -12,
+    paddingLeft: 10,
+    color: '#05375a',
+  },
+  errorMsg: {
+    color: '#FF0000',
+    fontSize: 14,
+    marginBottom: 7,
+    marginTop: 7,
+  },
+  button: {
+    marginTop: 50,
+  },
+  signIn: {
+    width: '100%',
+    height: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 10,
+  },
+  textSign: {
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+});
+export default SignInScreen;
