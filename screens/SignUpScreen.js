@@ -37,7 +37,7 @@ class SignUpScreen extends Component {
     isValidPassword: true,
   };
   //Profile Picture
-  uploadImage = () => {
+  uploadImagefile = () => {
     const options = {
       noData: true,
     };
@@ -51,6 +51,21 @@ class SignUpScreen extends Component {
       }
     });
   };
+  uploadImageCamera = () => {
+    const options = {
+      noData: true,
+    };
+    ImagePicker.openCamera({
+      width: 300,
+      height: 400,
+      cropping: true,
+    }).then(image => {
+      if (image.path) {
+        this.setState({photo: image});
+      }
+    });
+  };
+
   //Validation
   onNameChange = val => {
     val = val.trim();
@@ -132,7 +147,7 @@ class SignUpScreen extends Component {
         </View>
         <View style={styles.footer}>
           <ScrollView showsVerticalScrollIndicator={false}>
-            <View>
+            <View style={{flexDirection: 'row-reverse'}}>
               {photo ? (
                 <Image source={{uri: photo.path}} style={styles.profilePhoto} />
               ) : (
@@ -143,7 +158,10 @@ class SignUpScreen extends Component {
               )}
             </View>
             <Text style={styles.text_footer}>Full Name</Text>
-            <View style={styles.action}>
+            <View
+              style={
+                this.state.isValidName ? styles.action : styles.actionError
+              }>
               <TextInput
                 placeholder="Ex. John..."
                 style={styles.textInput}
@@ -202,14 +220,21 @@ class SignUpScreen extends Component {
             <Text style={styles.errorMsg}>
               {this.state.isValidconfPass ? null : errormsgcfm}
             </Text>
-            <View style={styles.button}>
+            <View style={styles.flexbutton}>
               <Button
-                onPress={this.uploadImage}
-                title="Photo"
+                onPress={this.uploadImagefile}
+                title="Gallery"
                 color="#DD0004"
                 accessibilityLabel="Open gallery"
               />
+              <Button
+                onPress={this.uploadImageCamera}
+                title="Camera"
+                color="#DD0004"
+                accessibilityLabel="Open Camera"
+              />
             </View>
+
             <View style={styles.button}>
               <Button
                 onPress={e => this.SignUphandle(e)}
@@ -270,7 +295,6 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#f2f2f2',
     paddingBottom: 5,
-    marginBottom: 10,
   },
   actionError: {
     flexDirection: 'row',
@@ -321,6 +345,10 @@ const styles = StyleSheet.create({
     width: 120,
     height: 120,
     opacity: 0.6,
+  },
+  flexbutton: {
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
   },
 });
 export default SignUpScreen;
