@@ -141,7 +141,11 @@ class SignUpScreen extends Component {
     const {photo} = this.state;
     return (
       <SafeAreaView style={styles.container}>
-        <StatusBar backgroundColor="#e14e51" barStyle="dark-content" />
+        <StatusBar
+          backgroundColor="#66ddaa"
+          barStyle="dark-content"
+          translucent={false}
+        />
         <View style={styles.header}>
           <Text style={styles.text_header}>Create Account</Text>
         </View>
@@ -224,13 +228,13 @@ class SignUpScreen extends Component {
               <Button
                 onPress={this.uploadImagefile}
                 title="Gallery"
-                color="#DD0004"
+                color="#00a86b"
                 accessibilityLabel="Open gallery"
               />
               <Button
                 onPress={this.uploadImageCamera}
                 title="Camera"
-                color="#DD0004"
+                color="#3eb489"
                 accessibilityLabel="Open Camera"
               />
             </View>
@@ -239,7 +243,7 @@ class SignUpScreen extends Component {
               <Button
                 onPress={e => this.SignUphandle(e)}
                 title="Sign Up"
-                color="#DD0004"
+                color="#66ddaa"
                 accessibilityLabel="you will be logged in"
                 style={styles.signIn}
               />
@@ -264,7 +268,7 @@ class SignUpScreen extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#DD0004',
+    backgroundColor: '#66ddaa',
   },
   header: {
     flex: 1,
@@ -332,7 +336,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   profilePhoto: {
-    borderColor: '#DD0004',
+    borderColor: '#00a86b',
     borderWidth: 2,
     borderRadius: 60,
     width: 120,

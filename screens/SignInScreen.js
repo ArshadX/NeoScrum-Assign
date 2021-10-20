@@ -13,10 +13,12 @@ import {
   ScrollView,
 } from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
-const myIcon = <Feather name="user" size={30} color="#900" />;
-const myIcon2 = <Feather name="lock" size={30} color="#900" />;
+const myIcon = <Feather name="user" size={30} color="#000000" />;
+const myIcon2 = <Feather name="lock" size={30} color="#000000" />;
 let errormsg_email = null;
 let errormsg_pass = null;
+/**
+ * @ */
 class SignInScreen extends Component {
   state = {
     email: '',
@@ -62,17 +64,23 @@ class SignInScreen extends Component {
     this.setState({isSecuretextEntry: !val});
   };
   login_handle = e => {
-    e.preventDefault();
+    // e.preventDefault();
     if (this.state.email === '' && this.state.password === '') {
       this.setState({isValidEmail: false, isValidPassword: false});
       errormsg_email = 'Can not be blank!';
       errormsg_pass = 'Can not be blank!';
     }
+    alert('Authentication');
+    return true;
   };
   render() {
     return (
       <SafeAreaView style={styles.container}>
-        <StatusBar backgroundColor="#e14e51" barStyle="dark-content" />
+        <StatusBar
+          backgroundColor="#66ddaa"
+          barStyle="dark-content"
+          translucent={false}
+        />
         <View style={styles.header}>
           <Text style={styles.text_header}>Welcome</Text>
         </View>
@@ -110,9 +118,9 @@ class SignInScreen extends Component {
               style={{marginTop: 10}}
               onPress={() => this.updateSecureTextEntry()}>
               {this.state.isSecuretextEntry ? (
-                <Feather name="eye-off" size={20} color="#900" />
+                <Feather name="eye-off" size={20} color="#000000" />
               ) : (
-                <Feather name="eye" size={20} color="#900" />
+                <Feather name="eye" size={20} color="#000000" />
               )}
             </TouchableOpacity>
           </View>
@@ -123,16 +131,16 @@ class SignInScreen extends Component {
             <Button
               onPress={e => this.login_handle(e)}
               title="Sign In"
-              color="#DD0004"
+              color="#00a86b"
               accessibilityLabel="you will be logged in"
               style={styles.signIn}
             />
           </View>
           <View style={styles.button}>
             <Button
-              onPress={() => this.props.navigation.navigate('Signup')}
+              onPress={() => this.props.navigation.navigate('SignUp')}
               title="Create Account"
-              color="#DD0004"
+              color="#3eb489"
               accessibilityLabel="Go to Create Account"
               style={styles.signIn}
             />
@@ -146,7 +154,7 @@ class SignInScreen extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#DD0004',
+    backgroundColor: '#66ddaa',
   },
   header: {
     flex: 1,
@@ -164,7 +172,7 @@ const styles = StyleSheet.create({
     paddingVertical: 30,
   },
   text_header: {
-    color: '#fff',
+    color: '#000000',
     fontWeight: 'bold',
     fontSize: 30,
   },

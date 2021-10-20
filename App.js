@@ -5,11 +5,18 @@
  * @format
  * @flow strict-local
  */
+import 'react-native-gesture-handler';
 import * as React from 'react';
 import {Component} from 'react';
 import {NavigationContainer, ServerContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-//import type {Node} from 'react';
+
+import {createDrawerNavigator} from '@react-navigation/drawer';
+//Importing Screen
+import MainTabScreen from './screens/MainTabScreen';
+import DrawerContent from './screens/DrawerContent';
+import RootStackScreen from './screens/RootScreen';
+
 import {
   SafeAreaView,
   ScrollView,
@@ -20,9 +27,7 @@ import {
   View,
   Image,
 } from 'react-native';
-import SignInScreen from './screens/SignInScreen';
-import SignUpScreen from './screens/SignUpScreen';
-import Home from './screens/Home';
+
 import {
   Colors,
   DebugInstructions,
@@ -30,60 +35,25 @@ import {
   LearnMoreLinks,
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
-
-function LogoTitle() {
-  return (
-    <View
-      style={{
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
-        marginLeft: -40,
-      }}>
-      <Image
-        style={{width: 150, height: 30}}
-        source={require('./assets/logo.png')}
-      />
-    </View>
-  );
-}
-
-const Stack = createNativeStackNavigator();
+const Drawer = createDrawerNavigator();
 class App extends Component {
   render() {
     return (
       <NavigationContainer>
-        <Stack.Navigator initialRouteName="SignIn">
-          <Stack.Screen
-            name="SignIn"
-            component={SignInScreen}
-            options={{
-              headerTitle: props => <LogoTitle {...props} />,
-              headerStyle: {
-                background: 'none',
-                backgroundColor: '#e14e51',
-              },
-            }}
-          />
-          <Stack.Screen
-            name="Signup"
-            component={SignUpScreen}
-            options={{
-              headerShown: false,
-            }}
-          />
-          <Stack.Screen
-            name="Home"
-            component={Home}
-            options={{
-              title: ' SignIn',
-              headerStyle: {
-                backgroundColor: '#DD0004',
-              },
-              headerTintColor: '#FBFCF6',
-            }}
-          />
-        </Stack.Navigator>
+        {false ? (
+          <Drawer.Navigator
+            drawerContent={props => <DrawerContent {...props} />}>
+            <Drawer.Screen
+              name="HomeDrawer"
+              component={MainTabScreen}
+              options={{
+                headerShown: false,
+              }}
+            />
+          </Drawer.Navigator>
+        ) : (
+          <RootStackScreen />
+        )}
       </NavigationContainer>
     );
   }

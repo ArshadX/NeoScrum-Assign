@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+
 import {
   View,
   Text,
@@ -12,20 +13,21 @@ import {
   SafeAreaView,
   ScrollView,
 } from 'react-native';
+import {
+  Colors,
+  DebugInstructions,
+  Header,
+  LearnMoreLinks,
+  ReloadInstructions,
+} from 'react-native/Libraries/NewAppScreen';
 
-class Home extends Component {
+class Feedback extends Component {
   state = {};
   render() {
     return (
       <SafeAreaView style={styles.container}>
-        <StatusBar backgroundColor="#d4d4d4" />
-        <View>
-          <Text style={styles.text_footer}></Text>
-          <Button
-            title="press me"
-            onPress={() => this.props.navigation.navigate('FeedbackScreen')}
-          />
-        </View>
+        <StatusBar barStyle="dark-content" backgroundColor="#d4d4d4" />
+        <Text style={{color: 'black'}}>FeedBack</Text>
       </SafeAreaView>
     );
   }
@@ -65,7 +67,6 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#f2f2f2',
     paddingBottom: 5,
-    marginBottom: 10,
   },
   actionError: {
     flexDirection: 'row',
@@ -84,9 +85,11 @@ const styles = StyleSheet.create({
   errorMsg: {
     color: '#FF0000',
     fontSize: 14,
+    marginBottom: 7,
+    marginTop: 7,
   },
   button: {
-    alignItems: '',
+    alignItems: 'stretch',
     marginTop: 50,
   },
   signIn: {
@@ -100,6 +103,25 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
   },
+  profilePhoto: {
+    borderColor: '#DD0004',
+    borderWidth: 2,
+    borderRadius: 60,
+    width: 120,
+    height: 120,
+  },
+  profilePhoto_before: {
+    borderColor: '#808080',
+    borderWidth: 2,
+    borderRadius: 60,
+    width: 120,
+    height: 120,
+    opacity: 0.6,
+  },
+  flexbutton: {
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
+  },
 });
 
-export default Home;
+export default Feedback;
