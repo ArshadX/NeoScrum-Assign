@@ -8,53 +8,25 @@
 import 'react-native-gesture-handler';
 import * as React from 'react';
 import {Component} from 'react';
-import {NavigationContainer, ServerContainer} from '@react-navigation/native';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
 
-import {createDrawerNavigator} from '@react-navigation/drawer';
-//Importing Screen
-import MainTabScreen from './screens/MainTabScreen';
-import DrawerContent from './screens/DrawerContent';
-import RootStackScreen from './screens/RootScreen';
+//Api fetching
+import {Provider} from 'react-redux';
+import store from './redux/store';
+import {StyleSheet} from 'react-native';
+import RootNavigation from './components/RootNavigation';
 
-import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-  Image,
-} from 'react-native';
-
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
-const Drawer = createDrawerNavigator();
 class App extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      userToken: '',
+    };
+  }
   render() {
     return (
-      <NavigationContainer>
-        {false ? (
-          <Drawer.Navigator
-            drawerContent={props => <DrawerContent {...props} />}>
-            <Drawer.Screen
-              name="HomeDrawer"
-              component={MainTabScreen}
-              options={{
-                headerShown: false,
-              }}
-            />
-          </Drawer.Navigator>
-        ) : (
-          <RootStackScreen />
-        )}
-      </NavigationContainer>
+      <Provider store={store}>
+        <RootNavigation />
+      </Provider>
     );
   }
 }

@@ -1,8 +1,8 @@
 import React, {Component} from 'react';
-
+import axios from 'axios';
+import CardFeed from '../components/CardFeed';
 import {
   View,
-  Text,
   TouchableOpacity,
   TextInput,
   Platform,
@@ -12,22 +12,106 @@ import {
   Button,
   SafeAreaView,
   ScrollView,
+  FlatList,
+  Image,
 } from 'react-native';
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+import {Modal, Portal, Text, Provider} from 'react-native-paper';
+import {connect} from 'react-redux';
 
 class Feedback extends Component {
-  state = {};
+  constructor(props) {
+    super(props);
+    this.state = {
+      Feedback: [],
+      Email: '',
+      visible: false,
+      message: '',
+    };
+  }
+  hideModal = () => this.setState({visible: false});
+  handleSubmit = (getfeedback, getemail) => {
+    this.setState({Email: getemail});
+    console.log(getfeedback);
+    console.log(getemail);
+    axios
+      .post(
+        'https://quiet-harbor-07900.herokuapp.com/addFeadback',
+        {
+          token: this.props.userData.token,
+          email: getemail,
+          feadback: getfeedback,
+        },
+        {
+          headers: {
+            Authorization: 'Bearer ' + this.props.userData.token,
+          },
+        },
+      )
+      .then(response => {
+        const users = response.data;
+        this.setState({message: users});
+        this.setState({visible: true});
+      })
+      .catch(error => {
+        const errorMsg = error.message;
+        console.log(errorMsg);
+      });
+  };
+  renderItem = ({item}) => {
+    return (
+      <CardFeed
+        title={item.name}
+        image={item.profile}
+        onSubmit={this.handleSubmit}
+        getemail={item.email}
+      />
+    );
+  };
+  componentDidMount() {
+    axios
+      .post(
+        'https://quiet-harbor-07900.herokuapp.com/GetAllRecievers',
+        {
+          token: this.props.userData.token,
+        },
+        {
+          headers: {
+            Authorization: 'Bearer ' + this.props.userData.token,
+          },
+        },
+      )
+      .then(response => {
+        const users = response.data;
+        this.setState({...this.state, Feedback: users});
+        console.log(users);
+      })
+      .catch(error => {
+        const errorMsg = error.message;
+        console.log(errorMsg);
+      });
+  }
   render() {
     return (
       <SafeAreaView style={styles.container}>
         <StatusBar barStyle="dark-content" backgroundColor="#d4d4d4" />
-        <Text style={{color: 'black'}}>FeedBack</Text>
+        <Provider>
+          <Portal>
+            <Modal
+              visible={this.state.visible}
+              onDismiss={setTimeout(this.hideModal, 3000)}
+              contentContainerStyle={styles.containerStyle}>
+              <Text>Submitted Succesfully</Text>
+            </Modal>
+          </Portal>
+
+          <FlatList
+            data={this.state.Feedback}
+            renderItem={this.renderItem}
+            keyExtractor={item => item._id}
+            initialNumToRender={3}
+            progressViewOffset={10}
+          />
+        </Provider>
       </SafeAreaView>
     );
   }
@@ -38,90 +122,22 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#d4d4d4',
   },
-  header: {
-    flex: 1,
-    justifyContent: 'flex-end',
-    paddingHorizontal: 20,
-    paddingBottom: 50,
-  },
-  footer: {
-    flex: 3,
+  containerStyle: {
     backgroundColor: '#fff',
-    borderTopLeftRadius: 30,
-    borderTopRightRadius: 30,
-    paddingHorizontal: 20,
-    paddingVertical: 30,
-  },
-  text_header: {
-    color: '#fff',
-    fontWeight: 'bold',
-    fontSize: 30,
-  },
-  text_footer: {
-    color: '#05375a',
-    fontSize: 18,
-  },
-  action: {
-    flexDirection: 'row',
-    marginTop: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: '#f2f2f2',
-    paddingBottom: 5,
-  },
-  actionError: {
-    flexDirection: 'row',
-    marginTop: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: '#FF0000',
-    paddingBottom: 5,
-  },
-  textInput: {
-    flex: 1,
-    marginTop: Platform.OS === 'ios' ? 0 : -12,
-    marginBottom: Platform.OS === 'ios' ? 0 : -12,
-    paddingLeft: 10,
-    color: '#05375a',
-  },
-  errorMsg: {
-    color: '#FF0000',
-    fontSize: 14,
-    marginBottom: 7,
-    marginTop: 7,
-  },
-  button: {
-    alignItems: 'stretch',
-    marginTop: 50,
-  },
-  signIn: {
-    width: '100%',
-    height: 50,
-    justifyContent: 'center',
+    padding: 20,
+    marginLeft: 30,
+    marginRight: 30,
+    borderRadius: 15,
     alignItems: 'center',
-    borderRadius: 10,
+    justifyContent: 'center',
   },
-  textSign: {
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-  profilePhoto: {
-    borderColor: '#DD0004',
-    borderWidth: 2,
-    borderRadius: 60,
-    width: 120,
-    height: 120,
-  },
-  profilePhoto_before: {
-    borderColor: '#808080',
-    borderWidth: 2,
-    borderRadius: 60,
-    width: 120,
-    height: 120,
-    opacity: 0.6,
-  },
-  flexbutton: {
-    flexDirection: 'row',
-    justifyContent: 'space-evenly',
+  notice: {
+    color: '#000000',
   },
 });
-
-export default Feedback;
+const mapStateToProps = (state, props) => {
+  return {
+    userData: state.user,
+  };
+};
+export default connect(mapStateToProps, null)(Feedback);

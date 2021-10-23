@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import axios from 'axios';
 import {
   View,
   Text,
@@ -11,19 +12,53 @@ import {
   Button,
   SafeAreaView,
   ScrollView,
+  FlatList,
 } from 'react-native';
+import {
+  Avatar,
+  Title,
+  Caption,
+  Paragraph,
+  TouchableRipple,
+  Switch,
+  Card,
+} from 'react-native-paper';
+import {connect, connectAdvanced} from 'react-redux';
 
+const Cardfeed = ({feedBack, name, date}) => (
+  <View style={styles.flatList}>
+    <Card style={styles.cardDesign}>
+      <Card.Title title="Feedback" titleStyle={styles.title} />
+      <Card.Content>
+        <Text style={styles.feedback}>{feedBack}</Text>
+      </Card.Content>
+      <Card.Actions style={styles.userInfo}>
+        <Text>{name}</Text>
+        <Text>{date}</Text>
+      </Card.Actions>
+    </Card>
+  </View>
+);
 class Home extends Component {
-  state = {};
+  constructor(props) {
+    super(props);
+    this.state = {};
+  }
+  renderItem = ({item}) => {
+    //console.log(item.name);
+    return (
+      <Cardfeed feedBack={item.feadback} name={item.name} date={item.date} />
+    );
+  };
   render() {
     return (
       <SafeAreaView style={styles.container}>
         <StatusBar backgroundColor="#d4d4d4" />
         <View>
-          <Text style={styles.text_footer}></Text>
-          <Button
-            title="press me"
-            onPress={() => this.props.navigation.navigate('FeedbackScreen')}
+          <FlatList
+            data={this.props.userData.feedback}
+            renderItem={this.renderItem}
+            keyExtractor={(item, index) => `${index}`}
           />
         </View>
       </SafeAreaView>
@@ -36,70 +71,44 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#d4d4d4',
   },
-  header: {
+  flatList: {
     flex: 1,
-    justifyContent: 'flex-end',
-    paddingHorizontal: 20,
-    paddingBottom: 50,
-  },
-  footer: {
-    flex: 3,
-    backgroundColor: '#fff',
-    borderTopLeftRadius: 30,
-    borderTopRightRadius: 30,
-    paddingHorizontal: 20,
-    paddingVertical: 30,
-  },
-  text_header: {
-    color: '#fff',
-    fontWeight: 'bold',
-    fontSize: 30,
-  },
-  text_footer: {
-    color: '#05375a',
-    fontSize: 18,
-  },
-  action: {
-    flexDirection: 'row',
-    marginTop: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: '#f2f2f2',
-    paddingBottom: 5,
-    marginBottom: 10,
-  },
-  actionError: {
-    flexDirection: 'row',
-    marginTop: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: '#FF0000',
-    paddingBottom: 5,
-  },
-  textInput: {
-    flex: 1,
-    marginTop: Platform.OS === 'ios' ? 0 : -12,
-    marginBottom: Platform.OS === 'ios' ? 0 : -12,
-    paddingLeft: 10,
-    color: '#05375a',
-  },
-  errorMsg: {
-    color: '#FF0000',
-    fontSize: 14,
-  },
-  button: {
-    alignItems: '',
-    marginTop: 50,
-  },
-  signIn: {
-    width: '100%',
-    height: 50,
-    justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: 10,
+    justifyContent: 'center',
+    marginBottom: 10,
+    paddingTop: 7,
+    paddingBottom: 7,
   },
-  textSign: {
-    fontSize: 18,
-    fontWeight: 'bold',
+  cardDesign: {
+    paddingTop: 7,
+    borderRadius: 10,
+    backgroundColor: '#b0e0e6',
+    elevation: 5,
+    width: 370,
+    height: 250,
+  },
+  feedback: {
+    color: '#000000',
+  },
+  title: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    color: '#008080',
+    borderBottomWidth: 1,
+    borderBottomColor: '#fefefa',
+    borderBottomLeftRadius: 0,
+    borderBottomRightRadius: 10,
+  },
+  userInfo: {
+    flexDirection: 'column',
+    marginTop: 100,
+    marginLeft: 200,
   },
 });
-
-export default Home;
+const mapStateToProps = (state, props) => {
+  return {
+    userData: state.user,
+  };
+};
+export default connect(mapStateToProps, null)(Home);

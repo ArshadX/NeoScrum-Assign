@@ -30,6 +30,7 @@ const HomeStackScreen = ({navigation}) => (
         ),
         headerTitleAlign: 'center',
         headerTintColor: '#000000',
+        headerStyle: {backgroundColor: '#d4d4d4'},
       }}
     />
   </HomeStack.Navigator>
@@ -53,6 +54,7 @@ const FeedbackStackScreen = ({navigation}) => (
         ),
         headerTitleAlign: 'center',
         headerTintColor: '#000000',
+        headerStyle: {backgroundColor: '#d4d4d4'},
       }}
     />
   </FeedbackStack.Navigator>

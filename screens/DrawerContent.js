@@ -1,18 +1,9 @@
 import React, {Component} from 'react';
 import {View, StyleSheet} from 'react-native';
 import {DrawerContentScrollView, DrawerItem} from '@react-navigation/drawer';
-import {
-  Avatar,
-  Title,
-  Caption,
-  Paragraph,
-  Drawer,
-  Text,
-  TouchableRipple,
-  Switch,
-  Button,
-} from 'react-native-paper';
+import {Avatar, Title, Caption, Drawer} from 'react-native-paper';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import {connect} from 'react-redux';
 class DrawerContent extends Component {
   render() {
     return (
@@ -29,6 +20,7 @@ class DrawerContent extends Component {
               </View>
               <View>
                 <Title style={styles.title}>Mo Arshad</Title>
+
                 <Caption style={styles.caption}>Trainee</Caption>
               </View>
             </View>

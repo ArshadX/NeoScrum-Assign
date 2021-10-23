@@ -1,4 +1,8 @@
 import React, {Component} from 'react';
+
+import {connect} from 'react-redux';
+import {login} from '../redux/user/userActions';
+
 import {
   View,
   Text,
@@ -12,22 +16,28 @@ import {
   SafeAreaView,
   ScrollView,
 } from 'react-native';
+
+//Import Icon
 import Feather from 'react-native-vector-icons/Feather';
+
 const myIcon = <Feather name="user" size={30} color="#000000" />;
 const myIcon2 = <Feather name="lock" size={30} color="#000000" />;
 let errormsg_email = null;
 let errormsg_pass = null;
 /**
  * @ */
-class SignInScreen extends Component {
-  state = {
-    email: '',
-    password: '',
-    isSecuretextEntry: true,
-    isValidEmail: true,
-    isValidPassword: true,
-  };
 
+class SignInScreen extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      email: '',
+      password: '',
+      isSecuretextEntry: true,
+      isValidEmail: true,
+      isValidPassword: true,
+    };
+  }
   onInputChange = val => {
     val = val.trim();
     this.setState({isValidEmail: false});
@@ -37,6 +47,7 @@ class SignInScreen extends Component {
       this.setState({isValidEmail: re.test(val)});
       if (this.state.isValidEmail) {
         this.setState({email: val});
+        console.log(this.state.email);
       } else {
         errormsg_email = 'Invalid';
       }
@@ -48,7 +59,7 @@ class SignInScreen extends Component {
     val = val.trim();
     this.setState({isValidPassword: false});
     if (val !== '') {
-      const re = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})/;
+      const re = /^(?=.*[a-zA-Z])(?=.*[0-9])(?=.{8,})/;
       this.setState({isValidPassword: re.test(val)});
       if (this.state.isValidPassword) {
         this.setState({password: val});
@@ -69,9 +80,13 @@ class SignInScreen extends Component {
       this.setState({isValidEmail: false, isValidPassword: false});
       errormsg_email = 'Can not be blank!';
       errormsg_pass = 'Can not be blank!';
+    } else {
+      this.props.login({
+        email: this.state.email,
+        password: this.state.password,
+      });
+      console.log(this.props.userData);
     }
-    alert('Authentication');
-    return true;
   };
   render() {
     return (
@@ -99,7 +114,7 @@ class SignInScreen extends Component {
             />
           </View>
           <Text style={styles.errorMsg}>
-            {this.state.isValidEmail ? null : errormsg_email}
+            {this.state.isValidEmail ? this.state.email : errormsg_email}
           </Text>
           <Text style={styles.text_footer}>Password</Text>
           <View
@@ -125,7 +140,7 @@ class SignInScreen extends Component {
             </TouchableOpacity>
           </View>
           <Text style={styles.errorMsg}>
-            {this.state.isValidPassword ? null : errormsg_pass}
+            {this.state.isValidPassword ? this.state.password : errormsg_pass}
           </Text>
           <View style={styles.button}>
             <Button
@@ -223,4 +238,16 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
 });
-export default SignInScreen;
+
+const mapStateToProps = state => {
+  return {
+    userData: state.user,
+  };
+};
+const mapDispatchToProps = dispatch => {
+  return {
+    login: data => dispatch(login(data)),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(SignInScreen);
