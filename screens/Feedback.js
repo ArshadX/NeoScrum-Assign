@@ -17,6 +17,7 @@ import {
 } from 'react-native';
 import {Modal, Portal, Text, Provider} from 'react-native-paper';
 import {connect} from 'react-redux';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 class Feedback extends Component {
   constructor(props) {
@@ -26,9 +27,42 @@ class Feedback extends Component {
       Email: '',
       visible: false,
       message: '',
+      query: '',
+      tempdata: [],
+      inputText: '',
     };
   }
   hideModal = () => this.setState({visible: false});
+  //search bar
+  contains = ({name, email}, query) => {
+    if (name.includes(query) || email.includes(query)) {
+      return true;
+    }
+    return false;
+  };
+  handleSearch = text => {
+    const formattedQuery = text;
+    const data = this.state.tempdata.filter(user =>
+      this.contains(user, formattedQuery),
+    );
+    this.setState({Feedback: data, query: text});
+  };
+  renderHeader = () => (
+    <View style={styles.searchbar}>
+      <TextInput
+        autoCapitalize="none"
+        autoCorrect={false}
+        onChangeText={this.handleSearch}
+        placeholder="Search"
+        style={{
+          width: 300,
+          backgroundColor: '#fff',
+        }}
+        textStyle={{color: '#000000'}}
+      />
+    </View>
+  );
+  //search bar end
   handleSubmit = (getfeedback, getemail) => {
     this.setState({Email: getemail});
     console.log(getfeedback);
@@ -82,7 +116,7 @@ class Feedback extends Component {
       )
       .then(response => {
         const users = response.data;
-        this.setState({...this.state, Feedback: users});
+        this.setState({...this.state, Feedback: users, tempdata: users});
         console.log(users);
       })
       .catch(error => {
@@ -92,13 +126,13 @@ class Feedback extends Component {
   }
   render() {
     return (
-      <SafeAreaView style={styles.container}>
+      <View style={styles.container}>
         <StatusBar barStyle="dark-content" backgroundColor="#d4d4d4" />
         <Provider>
           <Portal>
             <Modal
               visible={this.state.visible}
-              onDismiss={setTimeout(this.hideModal, 3000)}
+              onDismiss={setTimeout(this.hideModal, 4000)}
               contentContainerStyle={styles.containerStyle}>
               <Text>Submitted Succesfully</Text>
             </Modal>
@@ -110,9 +144,10 @@ class Feedback extends Component {
             keyExtractor={item => item._id}
             initialNumToRender={3}
             progressViewOffset={10}
+            ListHeaderComponent={this.renderHeader}
           />
         </Provider>
-      </SafeAreaView>
+      </View>
     );
   }
 }
@@ -133,6 +168,16 @@ const styles = StyleSheet.create({
   },
   notice: {
     color: '#000000',
+  },
+  searchbar: {
+    backgroundColor: '#fff',
+    padding: 7,
+    alignItems: 'flex-start',
+    justifyContent: 'flex-start',
+    borderRadius: 25,
+    marginLeft: 10,
+    marginRight: 10,
+    marginTop: 7,
   },
 });
 const mapStateToProps = (state, props) => {
