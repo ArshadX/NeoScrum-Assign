@@ -1,10 +1,17 @@
 import React, {Component} from 'react';
-import {View, StyleSheet} from 'react-native';
+import {View, StyleSheet, Image} from 'react-native';
 import {DrawerContentScrollView, DrawerItem} from '@react-navigation/drawer';
-import {Avatar, Title, Caption, Drawer} from 'react-native-paper';
+import {Title, Caption, Drawer} from 'react-native-paper';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import {connect} from 'react-redux';
+
 class DrawerContent extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      img: this.props.pro,
+    };
+  }
+
   render() {
     return (
       <View style={styles.drawerContent}>
@@ -12,14 +19,14 @@ class DrawerContent extends Component {
           <View style={styles.drawerContent}>
             <View style={styles.userInfoSection}>
               <View>
-                <Avatar.Image
+                <Image
                   source={require('../assets/profile_icon.png')}
-                  size={100}
-                  style={{backgroundColor: 'grey'}}
+                  style={styles.image}
+                  progressiveRenderingEnabled={true}
                 />
               </View>
               <View>
-                <Title style={styles.title}>Mo Arshad</Title>
+                <Title style={styles.title}>{this.props.N}</Title>
 
                 <Caption style={styles.caption}>Trainee</Caption>
               </View>
@@ -71,6 +78,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginTop: 3,
     fontWeight: 'bold',
+    color: '#000000',
   },
   caption: {
     fontSize: 14,
@@ -88,6 +96,15 @@ const styles = StyleSheet.create({
   },
   drawerSection: {
     marginTop: 15,
+  },
+  image: {
+    width: 110,
+    height: 110,
+    borderWidth: 2,
+    borderRadius: 55,
+    backgroundColor: 'grey',
+    borderColor: '#000000',
+    opacity: 0.7,
   },
 });
 

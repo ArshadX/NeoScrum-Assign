@@ -20,6 +20,7 @@ class RootNavigation extends Component {
   }
   logout = () => {
     this.props.Logout();
+    console.log(this.props.userData.profile);
   };
   render() {
     return (
@@ -27,7 +28,12 @@ class RootNavigation extends Component {
         {this.props.userData.islogging == true ? (
           <Drawer.Navigator
             drawerContent={props => (
-              <DrawerContent {...props} SignOut={this.logout} />
+              <DrawerContent
+                {...props}
+                SignOut={this.logout}
+                N={this.props.userData.name}
+                pro={this.props.userData.profile}
+              />
             )}>
             <Drawer.Screen
               name="HomeDrawer"

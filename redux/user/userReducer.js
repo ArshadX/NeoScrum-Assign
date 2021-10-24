@@ -8,12 +8,13 @@ import {
 const initialState = {
   isloading: false,
   users: [],
+  name: '',
   error: '',
   islogging: false,
   token: '',
   feedback: [],
   id: '',
-  ProfileImage: '',
+  profile: '',
 };
 
 const reducer = (state = initialState, action) => {
@@ -33,7 +34,8 @@ const reducer = (state = initialState, action) => {
         token: action?.payload?.UserLogin?.token,
         id: action?.payload?.UserLogin?._id,
         feedback: action?.payload?.UserLogin?.Feadbacks,
-        ProfileImage: action?.payload?.UserLogin?.profile,
+        name: action?.payload?.UserLogin?.name,
+        profile: action?.payload?.UserLogin?.profile,
       };
     case FETCH_USERS_FAILURE:
       return {

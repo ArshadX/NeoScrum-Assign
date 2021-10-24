@@ -75,7 +75,7 @@ class SignInScreen extends Component {
     this.setState({isSecuretextEntry: !val});
   };
   login_handle = e => {
-    // e.preventDefault();
+    e.preventDefault();
     if (this.state.email === '' && this.state.password === '') {
       this.setState({isValidEmail: false, isValidPassword: false});
       errormsg_email = 'Can not be blank!';
@@ -114,7 +114,7 @@ class SignInScreen extends Component {
             />
           </View>
           <Text style={styles.errorMsg}>
-            {this.state.isValidEmail ? this.state.email : errormsg_email}
+            {this.state.isValidEmail ? null : errormsg_email}
           </Text>
           <Text style={styles.text_footer}>Password</Text>
           <View
@@ -140,7 +140,7 @@ class SignInScreen extends Component {
             </TouchableOpacity>
           </View>
           <Text style={styles.errorMsg}>
-            {this.state.isValidPassword ? this.state.password : errormsg_pass}
+            {this.state.isValidPassword ? null : errormsg_pass}
           </Text>
           <View style={styles.button}>
             <Button

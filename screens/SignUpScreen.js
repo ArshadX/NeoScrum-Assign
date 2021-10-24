@@ -10,7 +10,6 @@ import {registerUser} from '../redux/user/userActions';
 import {
   View,
   Text,
-  TouchableOpacity,
   TextInput,
   Platform,
   StyleSheet,
@@ -20,10 +19,7 @@ import {
   SafeAreaView,
   ScrollView,
   Image,
-  TouchableHighlight,
 } from 'react-native';
-import Feather from 'react-native-vector-icons/Feather';
-import {throwStatement} from '@babel/types';
 let errormsg_email = '';
 
 class SignUpScreen extends Component {
@@ -49,17 +45,14 @@ class SignUpScreen extends Component {
       width: 300,
       height: 400,
       cropping: true,
-      mediaType: 'photo',
     }).then(image => {
       if (image.path) {
         this.setState({
           ...this.state,
           photo: image.path,
           imageType: image.mime,
-          imageName: image.filename,
-          imageUri: image.base64,
+          imageName: 'profilephoto.jpeg',
         });
-        console.log(image);
       }
     });
   };
@@ -70,8 +63,12 @@ class SignUpScreen extends Component {
       cropping: true,
     }).then(image => {
       if (image.path) {
-        this.setState({photo: image.path});
-        console.log(image);
+        this.setState({
+          ...this.state,
+          photo: image.path,
+          imageType: image.mime,
+          imageName: 'profilephoto.jpeg',
+        });
       }
     });
   };
@@ -108,15 +105,17 @@ class SignUpScreen extends Component {
       errormsg_email = 'Can not be blank!';
       errormsg_pass = 'Can not be blank!';
     } else {
-      this.props.registerUser({
-        name: this.state.fullName,
-        email: this.state.email,
-        profileImage: {
-          uri: this.state.photo,
-          type: 'image/jpeg',
-        },
+      let formData = new FormData();
+      formData.append('name', this.state.fullName);
+      formData.append('email', this.state.email);
+      // console.log("line 110",JSON.stringify(this.state.image.assets))
+      formData.append('profileImage', {
+        uri: this.state.photo,
+        type: this.state.imageType,
+        name: this.state.imageName,
       });
-      console.log('login');
+      this.props.registerUser(formData);
+      console.log('login', typeof formData);
     }
   };
   render() {
@@ -130,8 +129,6 @@ class SignUpScreen extends Component {
         />
         <View style={styles.header}>
           <Text style={styles.text_header}>Create Account</Text>
-          <Text style={styles.text_header}>{this.state.email}</Text>
-          <Text style={styles.text_header}>{this.state.fullName}</Text>
         </View>
         <View style={styles.footer}>
           <ScrollView showsVerticalScrollIndicator={false}>
@@ -158,7 +155,7 @@ class SignUpScreen extends Component {
               />
             </View>
             <Text style={styles.errorMsg}>
-              {this.state.isValidName ? this.state.fullName : 'Invalid'}
+              {this.state.isValidName ? null : 'Invalid'}
             </Text>
             <Text style={styles.text_footer}>Email</Text>
             <View
@@ -173,7 +170,7 @@ class SignUpScreen extends Component {
               />
             </View>
             <Text style={styles.errorMsg}>
-              {this.state.isValidEmail ? this.state.email : errormsg_email}
+              {this.state.isValidEmail ? null : errormsg_email}
             </Text>
             <View style={styles.flexbutton}>
               <Button
@@ -194,7 +191,7 @@ class SignUpScreen extends Component {
               <Button
                 onPress={e => this.SignUphandle(e)}
                 title="Sign Up"
-                color="#66ddaa"
+                color="#00a86b"
                 accessibilityLabel="you will be logged in"
                 style={styles.signIn}
               />
