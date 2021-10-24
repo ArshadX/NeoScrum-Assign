@@ -51,7 +51,7 @@ class DrawerContent extends Component {
             )}
             label="Sign Out"
             onPress={() => {
-              this.props.navigation.navigate('SignIn');
+              this.props.SignOut();
             }}
           />
         </Drawer.Section>

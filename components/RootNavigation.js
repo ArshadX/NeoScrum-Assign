@@ -15,14 +15,21 @@ import RootStackScreen from '../screens/RootScreen';
 class RootNavigation extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      login: this.props.userData.islogging,
+    };
   }
+  logout = () => {
+    this.setState({login: false});
+  };
   render() {
     return (
       <NavigationContainer>
-        {this.props.userData.islogging == true ? (
+        {this.state.login == true ? (
           <Drawer.Navigator
-            drawerContent={props => <DrawerContent {...props} />}>
+            drawerContent={props => (
+              <DrawerContent {...props} SignOut={this.logout} />
+            )}>
             <Drawer.Screen
               name="HomeDrawer"
               component={MainTabScreen}
