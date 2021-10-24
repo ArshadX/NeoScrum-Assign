@@ -2,6 +2,7 @@ import {
   FETCH_USERS_FAILURE,
   FETCH_USERS_REQUEST,
   FETCH_USERS_SUCCESS,
+  SignOut,
 } from './userTypes';
 
 const initialState = {
@@ -39,6 +40,12 @@ const reducer = (state = initialState, action) => {
         isloading: false,
         users: [],
         error: action.payload,
+      };
+    case SignOut: //remove this
+      return {
+        isloading: false,
+        islogging: false,
+        users: [],
       };
     default:
       return state;

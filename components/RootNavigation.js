@@ -11,21 +11,20 @@ import DrawerContent from '../screens/DrawerContent';
 import MainTabScreen from '../screens/MainTabScreen';
 import {connect} from 'react-redux';
 import RootStackScreen from '../screens/RootScreen';
+import {Logout} from '../redux/user/userActions';
 
 class RootNavigation extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      login: this.props.userData.islogging,
-    };
+    this.state = {};
   }
   logout = () => {
-    this.setState({login: false});
+    this.props.Logout();
   };
   render() {
     return (
       <NavigationContainer>
-        {this.state.login == true ? (
+        {this.props.userData.islogging == true ? (
           <Drawer.Navigator
             drawerContent={props => (
               <DrawerContent {...props} SignOut={this.logout} />
@@ -53,7 +52,7 @@ const mapStateToProps = state => {
 };
 const mapDispatchToProps = dispatch => {
   return {
-    login: data => dispatch(login(data)),
+    Logout: data => dispatch(Logout()),
   };
 };
 

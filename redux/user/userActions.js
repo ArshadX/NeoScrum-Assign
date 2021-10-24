@@ -4,6 +4,7 @@ import {
   FETCH_USERS_FAILURE,
   FETCH_USERS_REQUEST,
   FETCH_USERS_SUCCESS,
+  SignOut,
 } from './userTypes';
 
 export const fetchUsersRequest = () => {
@@ -23,6 +24,12 @@ const fetchUsersFailure = error => {
   return {
     type: FETCH_USERS_FAILURE,
     payload: error,
+  };
+};
+const signOUT = () => {
+  //remove this
+  return {
+    type: SignOut,
   };
 };
 
@@ -58,5 +65,11 @@ export const registerUser = data => {
         dispatch(fetchUsersFailure(errorMsg));
         console.log(errorMsg);
       });
+  };
+};
+
+export const Logout = () => {
+  return dispatch => {
+    dispatch(signOUT());
   };
 };
