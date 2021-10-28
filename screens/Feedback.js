@@ -3,21 +3,15 @@ import axios from 'axios';
 import CardFeed from '../components/CardFeed';
 import {
   View,
-  TouchableOpacity,
   TextInput,
-  Platform,
   StyleSheet,
   StatusBar,
-  Alert,
-  Button,
-  SafeAreaView,
-  ScrollView,
   FlatList,
-  Image,
+  ActivityIndicator,
 } from 'react-native';
 import {Modal, Portal, Text, Provider} from 'react-native-paper';
 import {connect} from 'react-redux';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import {SafeAreaView} from 'react-native-safe-area-context';
 
 class Feedback extends Component {
   constructor(props) {
@@ -30,6 +24,7 @@ class Feedback extends Component {
       query: '',
       tempdata: [],
       inputText: '',
+      isloading: false,
     };
   }
   hideModal = () => this.setState({visible: false});
@@ -47,6 +42,17 @@ class Feedback extends Component {
     );
     this.setState({Feedback: data, query: text});
   };
+  handleDel = text => {
+    const formattedQuery = text;
+    const data = this.state.tempdata.filter(user => {
+      const {email} = user;
+      if (email.includes(formattedQuery)) {
+        return false;
+      }
+      return true;
+    });
+    this.setState({Feedback: data, query: text});
+  };
   renderHeader = () => (
     <View style={styles.searchbar}>
       <TextInput
@@ -59,14 +65,14 @@ class Feedback extends Component {
           backgroundColor: '#fff',
         }}
         textStyle={{color: '#000000'}}
+        placeholderTextColor="#808080"
       />
     </View>
   );
   //search bar end
   handleSubmit = (getfeedback, getemail) => {
-    this.setState({Email: getemail});
-    console.log(getfeedback);
-    console.log(getemail);
+    this.setState({Email: getemail, isloading: true});
+
     axios
       .post(
         'https://quiet-harbor-07900.herokuapp.com/addFeadback',
@@ -83,12 +89,14 @@ class Feedback extends Component {
       )
       .then(response => {
         const users = response.data;
-        this.setState({message: users});
+        this.setState({message: users, isloading: false});
         this.setState({visible: true});
+        this.handleDel(getemail);
       })
       .catch(error => {
         const errorMsg = error.message;
         console.log(errorMsg);
+        this.setState({isloading: false});
       });
   };
   renderItem = ({item}) => {
@@ -117,16 +125,25 @@ class Feedback extends Component {
       .then(response => {
         const users = response.data;
         this.setState({...this.state, Feedback: users, tempdata: users});
-        console.log(users);
       })
       .catch(error => {
         const errorMsg = error.message;
         console.log(errorMsg);
       });
   }
+  componentWillUnmount() {
+    this.setState({
+      Feedback: [],
+      Email: '',
+      message: '',
+      query: '',
+      tempdata: [],
+      inputText: '',
+    });
+  }
   render() {
     return (
-      <View style={styles.container}>
+      <SafeAreaView style={styles.container}>
         <StatusBar barStyle="dark-content" backgroundColor="#d4d4d4" />
         <Provider>
           <Portal>
@@ -134,20 +151,28 @@ class Feedback extends Component {
               visible={this.state.visible}
               onDismiss={setTimeout(this.hideModal, 4000)}
               contentContainerStyle={styles.containerStyle}>
-              <Text>Submitted Succesfully</Text>
+              <Text>Submit Successfully</Text>
+            </Modal>
+            <Modal
+              visible={this.state.isloading}
+              contentContainerStyle={styles.containerStyle}>
+              <ActivityIndicator size="small" color="#0000ff" />
+              <Text>loading...</Text>
             </Modal>
           </Portal>
 
           <FlatList
             data={this.state.Feedback}
+            ListHeaderComponent={this.renderHeader}
+            stickyHeaderIndices={[0]}
             renderItem={this.renderItem}
             keyExtractor={item => item._id}
-            initialNumToRender={3}
+            initialNumToRender={5}
             progressViewOffset={10}
-            ListHeaderComponent={this.renderHeader}
+            stickyHeaderHiddenOnScroll={true}
           />
         </Provider>
-      </View>
+      </SafeAreaView>
     );
   }
 }

@@ -6,7 +6,6 @@ import axios from 'axios';
 
 const CardFeed = ({title, image, onSubmit, getemail}) => {
   const [postFeed, setfeedback] = React.useState({feedback: ''});
-  console.log(image);
   return (
     <View style={styles.flatList}>
       <Card style={styles.cardDesign}>
@@ -89,6 +88,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     backgroundColor: '#FFFFFF',
     width: 350,
+    color: '#000000',
   },
   userInfo: {
     flex: 1,

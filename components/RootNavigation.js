@@ -20,7 +20,6 @@ class RootNavigation extends Component {
   }
   logout = () => {
     this.props.Logout();
-    console.log(this.props.userData.profile);
   };
   render() {
     return (
@@ -34,7 +33,8 @@ class RootNavigation extends Component {
                 N={this.props.userData.name}
                 pro={this.props.userData.profile}
               />
-            )}>
+            )}
+            defaultStatus="closed">
             <Drawer.Screen
               name="HomeDrawer"
               component={MainTabScreen}

@@ -5,7 +5,11 @@ import ImagePicker from 'react-native-image-crop-picker';
 
 import {connect} from 'react-redux';
 
-import {registerUser} from '../redux/user/userActions';
+import {
+  registerUser,
+  SignInComplete,
+  SignupComplete,
+} from '../redux/user/userActions';
 
 import {
   View,
@@ -19,7 +23,9 @@ import {
   SafeAreaView,
   ScrollView,
   Image,
+  ActivityIndicator,
 } from 'react-native';
+import {Modal, Portal, Provider} from 'react-native-paper';
 let errormsg_email = '';
 
 class SignUpScreen extends Component {
@@ -36,7 +42,14 @@ class SignUpScreen extends Component {
       isValidName: true,
       secureTextEntry: true,
       isValidEmail: true,
+      //  isSigning: this.props.userData.isSignup,
+      // visible: this.props.userData.isloading,
+      password: '',
     };
+  }
+
+  componentWillUnmount() {
+    this.setState({password: ''});
   }
 
   //Profile Picture
@@ -116,6 +129,10 @@ class SignUpScreen extends Component {
       });
       this.props.registerUser(formData);
       console.log('login', typeof formData);
+      this.setState({password: this.props.userData.pswd});
+      if (this.props.userData.isSignup) {
+        this.props.navigation.navigate('SignIn');
+      }
     }
   };
   render() {
@@ -127,87 +144,108 @@ class SignUpScreen extends Component {
           barStyle="dark-content"
           translucent={false}
         />
-        <View style={styles.header}>
-          <Text style={styles.text_header}>Create Account</Text>
-        </View>
-        <View style={styles.footer}>
-          <ScrollView showsVerticalScrollIndicator={false}>
-            <View style={{flexDirection: 'row-reverse'}}>
-              {photo ? (
-                <Image source={{uri: photo}} style={styles.profilePhoto} />
-              ) : (
-                <Image
-                  source={require('../assets/profile_icon.png')}
-                  style={styles.profilePhoto_before}
-                />
-              )}
-            </View>
-            <Text style={styles.text_footer}>Full Name</Text>
-            <View
-              style={
-                this.state.isValidName ? styles.action : styles.actionError
-              }>
-              <TextInput
-                placeholder="Ex. John..."
-                style={styles.textInput}
-                onChangeText={val => this.onNameChange(val)}
-                autoCapitalize="none"
-              />
-            </View>
-            <Text style={styles.errorMsg}>
-              {this.state.isValidName ? null : 'Invalid'}
-            </Text>
-            <Text style={styles.text_footer}>Email</Text>
-            <View
-              style={
-                this.state.isValidEmail ? styles.action : styles.actionError
-              }>
-              <TextInput
-                placeholder="Your Email Id..."
-                style={styles.textInput}
-                onChangeText={val => this.onEmailChange(val)}
-                autoCapitalize="none"
-              />
-            </View>
-            <Text style={styles.errorMsg}>
-              {this.state.isValidEmail ? null : errormsg_email}
-            </Text>
-            <View style={styles.flexbutton}>
-              <Button
-                onPress={this.uploadImagefile}
-                title="Gallery"
-                color="#00a86b"
-                accessibilityLabel="Open gallery"
-              />
-              <Button
-                onPress={this.uploadImageCamera}
-                title="Camera"
-                color="#3eb489"
-                accessibilityLabel="Open Camera"
-              />
-            </View>
+        <Provider>
+          <View style={styles.header}>
+            <Text style={styles.text_header}>Create Account</Text>
+          </View>
 
-            <View style={styles.button}>
-              <Button
-                onPress={e => this.SignUphandle(e)}
-                title="Sign Up"
-                color="#00a86b"
-                accessibilityLabel="you will be logged in"
-                style={styles.signIn}
-              />
-            </View>
-            <View style={{marginTop: 25}}>
-              <Text>
-                Already on NeoScrum ?{' '}
-                <Text
-                  style={{color: 'blue'}}
-                  onPress={() => this.props.navigation.navigate('SignIn')}>
-                  Sign in
+          <View style={styles.footer}>
+            <Portal>
+              <Modal
+                visible={this.props.userData.isloading}
+                contentContainerStyle={styles.containerStyle}>
+                <ActivityIndicator
+                  style={{justifyContent: 'space-around', color: '#000000'}}
+                />
+                <Text style={styles.textSign}>loading...</Text>
+              </Modal>
+              <Modal
+                visible={this.props.userData.isSignup}
+                onDismiss={() => this.props.SignupComplete()}
+                contentContainerStyle={styles.containerStyle}>
+                <Text style={styles.textSign}>
+                  Your password : {this.props.userData.pswd}
                 </Text>
+              </Modal>
+            </Portal>
+            <ScrollView showsVerticalScrollIndicator={false}>
+              <View style={{flexDirection: 'row-reverse'}}>
+                {photo ? (
+                  <Image source={{uri: photo}} style={styles.profilePhoto} />
+                ) : (
+                  <Image
+                    source={require('../assets/profile_icon.png')}
+                    style={styles.profilePhoto_before}
+                  />
+                )}
+              </View>
+              <Text style={styles.text_footer}>Full Name</Text>
+              <View
+                style={
+                  this.state.isValidName ? styles.action : styles.actionError
+                }>
+                <TextInput
+                  placeholder="Ex. John..."
+                  style={styles.textInput}
+                  onChangeText={val => this.onNameChange(val)}
+                  autoCapitalize="none"
+                />
+              </View>
+              <Text style={styles.errorMsg}>
+                {this.state.isValidName ? null : 'Invalid'}
               </Text>
-            </View>
-          </ScrollView>
-        </View>
+              <Text style={styles.text_footer}>Email</Text>
+              <View
+                style={
+                  this.state.isValidEmail ? styles.action : styles.actionError
+                }>
+                <TextInput
+                  placeholder="Your Email Id..."
+                  style={styles.textInput}
+                  onChangeText={val => this.onEmailChange(val)}
+                  autoCapitalize="none"
+                />
+              </View>
+              <Text style={styles.errorMsg}>
+                {this.state.isValidEmail ? null : errormsg_email}
+              </Text>
+              <View style={styles.flexbutton}>
+                <Button
+                  onPress={this.uploadImagefile}
+                  title="Gallery"
+                  color="#00a86b"
+                  accessibilityLabel="Open gallery"
+                />
+                <Button
+                  onPress={this.uploadImageCamera}
+                  title="Camera"
+                  color="#3eb489"
+                  accessibilityLabel="Open Camera"
+                />
+              </View>
+
+              <View style={styles.button}>
+                <Button
+                  onPress={e => this.SignUphandle(e)}
+                  title="Sign Up"
+                  color="#00a86b"
+                  accessibilityLabel="you will be logged in"
+                  style={styles.signIn}
+                />
+              </View>
+              <View style={{marginTop: 25}}>
+                <Text style={styles.textSign}>
+                  Already on NeoScrum ?{' '}
+                  <Text
+                    style={{color: 'blue'}}
+                    onPress={() => this.props.navigation.navigate('SignIn')}>
+                    Sign in
+                  </Text>
+                </Text>
+              </View>
+            </ScrollView>
+          </View>
+        </Provider>
       </SafeAreaView>
     );
   }
@@ -225,7 +263,7 @@ const styles = StyleSheet.create({
     paddingBottom: 50,
   },
   footer: {
-    flex: 3,
+    flex: 4,
     backgroundColor: '#fff',
     borderTopLeftRadius: 30,
     borderTopRightRadius: 30,
@@ -280,8 +318,8 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   textSign: {
-    fontSize: 18,
-    fontWeight: 'bold',
+    fontSize: 15,
+    color: '#808080',
   },
   profilePhoto: {
     borderColor: '#00a86b',
@@ -302,10 +340,25 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-evenly',
   },
+  containerStyle: {
+    backgroundColor: '#fff',
+    padding: 20,
+    marginLeft: 30,
+    marginRight: 30,
+    borderRadius: 15,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
 });
+const mapStateToProps = state => {
+  return {
+    userData: state.user,
+  };
+};
 const mapDispatchToProps = dispatch => {
   return {
     registerUser: data => dispatch(registerUser(data)),
+    SignupComplete: () => dispatch(SignupComplete()),
   };
 };
-export default connect(null, mapDispatchToProps)(SignUpScreen);
+export default connect(mapStateToProps, mapDispatchToProps)(SignUpScreen);

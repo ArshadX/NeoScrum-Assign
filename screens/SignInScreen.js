@@ -15,10 +15,13 @@ import {
   Button,
   SafeAreaView,
   ScrollView,
+  ActivityIndicator,
 } from 'react-native';
 
 //Import Icon
 import Feather from 'react-native-vector-icons/Feather';
+import {color} from 'react-native-reanimated';
+import {Modal, Portal, Provider} from 'react-native-paper';
 
 const myIcon = <Feather name="user" size={30} color="#000000" />;
 const myIcon2 = <Feather name="lock" size={30} color="#000000" />;
@@ -88,6 +91,10 @@ class SignInScreen extends Component {
       console.log(this.props.userData);
     }
   };
+  /**
+   * @author Arshad
+   * @description redering and validating the input with regexp and returning JSX
+   */
   render() {
     return (
       <SafeAreaView style={styles.container}>
@@ -96,71 +103,84 @@ class SignInScreen extends Component {
           barStyle="dark-content"
           translucent={false}
         />
-        <View style={styles.header}>
-          <Text style={styles.text_header}>Welcome</Text>
-        </View>
-        <View style={styles.footer}>
-          <Text style={styles.text_footer}>Email</Text>
-          <View
-            style={
-              this.state.isValidEmail ? styles.action : styles.actionError
-            }>
-            {myIcon}
-            <TextInput
-              placeholder="Your Email Id..."
-              style={styles.textInput}
-              autoCapitalize="none"
-              onChangeText={val => this.onInputChange(val)}
-            />
+        <Provider>
+          <Portal>
+            <Modal
+              visible={this.props.userData.isloading}
+              contentContainerStyle={styles.containerStyle}>
+              <ActivityIndicator
+                style={{justifyContent: 'space-around', color: '#000000'}}
+              />
+              <Text>loading...</Text>
+            </Modal>
+          </Portal>
+          <View style={styles.header}>
+            <Text style={styles.text_header}>Welcome</Text>
           </View>
-          <Text style={styles.errorMsg}>
-            {this.state.isValidEmail ? null : errormsg_email}
-          </Text>
-          <Text style={styles.text_footer}>Password</Text>
-          <View
-            style={
-              this.state.isValidPassword ? styles.action : styles.actionError
-            }>
-            {myIcon2}
-            <TextInput
-              placeholder="Ex: John@1234"
-              style={styles.textInput}
-              autoCapitalize="none"
-              secureTextEntry={this.state.isSecuretextEntry ? true : false}
-              onChangeText={val => this.onPasswordChange(val)}
-            />
-            <TouchableOpacity
-              style={{marginTop: 10}}
-              onPress={() => this.updateSecureTextEntry()}>
-              {this.state.isSecuretextEntry ? (
-                <Feather name="eye-off" size={20} color="#000000" />
-              ) : (
-                <Feather name="eye" size={20} color="#000000" />
-              )}
-            </TouchableOpacity>
+          <View style={styles.footer}>
+            <Text style={styles.text_footer}>Email</Text>
+            <View
+              style={
+                this.state.isValidEmail ? styles.action : styles.actionError
+              }>
+              {myIcon}
+              <TextInput
+                placeholder="Your Email Id..."
+                style={styles.textInput}
+                autoCapitalize="none"
+                onChangeText={val => this.onInputChange(val)}
+              />
+            </View>
+            <Text style={styles.errorMsg}>
+              {this.state.isValidEmail ? null : errormsg_email}
+            </Text>
+            <Text style={styles.text_footer}>Password</Text>
+            <View
+              style={
+                this.state.isValidPassword ? styles.action : styles.actionError
+              }>
+              {myIcon2}
+              <TextInput
+                placeholder="Ex: John@1234"
+                style={styles.textInput}
+                autoCapitalize="none"
+                secureTextEntry={this.state.isSecuretextEntry ? true : false}
+                onChangeText={val => this.onPasswordChange(val)}
+              />
+              <TouchableOpacity
+                style={{marginTop: 10}}
+                onPress={() => this.updateSecureTextEntry()}>
+                {this.state.isSecuretextEntry ? (
+                  <Feather name="eye-off" size={20} color="#000000" />
+                ) : (
+                  <Feather name="eye" size={20} color="#000000" />
+                )}
+              </TouchableOpacity>
+            </View>
+            <Text style={styles.errorMsg}>
+              {this.state.isValidPassword ? null : errormsg_pass}
+            </Text>
+            <Text style={{color: 'red'}}>{this.props.userData.error}</Text>
+            <View style={styles.button}>
+              <Button
+                onPress={e => this.login_handle(e)}
+                title="Sign In"
+                color="#00a86b"
+                accessibilityLabel="you will be logged in"
+                style={styles.signIn}
+              />
+            </View>
+            <View style={styles.button}>
+              <Button
+                onPress={() => this.props.navigation.navigate('SignUp')}
+                title="Create Account"
+                color="#3eb489"
+                accessibilityLabel="Go to Create Account"
+                style={styles.signIn}
+              />
+            </View>
           </View>
-          <Text style={styles.errorMsg}>
-            {this.state.isValidPassword ? null : errormsg_pass}
-          </Text>
-          <View style={styles.button}>
-            <Button
-              onPress={e => this.login_handle(e)}
-              title="Sign In"
-              color="#00a86b"
-              accessibilityLabel="you will be logged in"
-              style={styles.signIn}
-            />
-          </View>
-          <View style={styles.button}>
-            <Button
-              onPress={() => this.props.navigation.navigate('SignUp')}
-              title="Create Account"
-              color="#3eb489"
-              accessibilityLabel="Go to Create Account"
-              style={styles.signIn}
-            />
-          </View>
-        </View>
+        </Provider>
       </SafeAreaView>
     );
   }
@@ -178,7 +198,7 @@ const styles = StyleSheet.create({
     paddingBottom: 50,
   },
   footer: {
-    flex: 3,
+    flex: 6,
     justifyContent: 'flex-start',
     backgroundColor: '#fff',
     borderTopLeftRadius: 30,
@@ -236,6 +256,15 @@ const styles = StyleSheet.create({
   textSign: {
     fontSize: 18,
     fontWeight: 'bold',
+  },
+  containerStyle: {
+    backgroundColor: '#fff',
+    padding: 20,
+    marginLeft: 30,
+    marginRight: 30,
+    borderRadius: 15,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
 

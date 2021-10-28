@@ -64,7 +64,7 @@ class MainTabScreen extends Component {
     return (
       <Tab.Navigator
         initialRouteName="HomeScreen"
-        activeColor="#000000"
+        activeColor="#0000cd"
         barStyle={{backgroundColor: '#ffff'}}>
         <Tab.Screen
           name="HomeScreen"
@@ -72,8 +72,9 @@ class MainTabScreen extends Component {
           options={{
             tabBarLabel: 'Home',
             tabBarIcon: ({color}) => (
-              <MaterialIcons name="home" color="#000000" size={26} />
+              <MaterialIcons name="home" color={color} size={26} />
             ),
+            tabBarAccessibilityLabel: 'first',
           }}
         />
         <Tab.Screen
@@ -82,7 +83,7 @@ class MainTabScreen extends Component {
           options={{
             tabBarLabel: 'Feedback',
             tabBarIcon: ({color}) => (
-              <MaterialIcons name="forum" color="#000000" size={26} />
+              <MaterialIcons name="forum" color={color} size={26} />
             ),
           }}
         />

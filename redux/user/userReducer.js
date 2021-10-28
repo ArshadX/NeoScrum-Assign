@@ -3,6 +3,8 @@ import {
   FETCH_USERS_REQUEST,
   FETCH_USERS_SUCCESS,
   SignOut,
+  SignUp,
+  fetch_Users_Signup_COMPLETE,
 } from './userTypes';
 
 const initialState = {
@@ -15,6 +17,9 @@ const initialState = {
   feedback: [],
   id: '',
   profile: '',
+  msg: '',
+  pswd: '',
+  isSignup: false,
 };
 
 const reducer = (state = initialState, action) => {
@@ -41,14 +46,32 @@ const reducer = (state = initialState, action) => {
       return {
         isloading: false,
         users: [],
-        error: action.payload,
+        error: 'User does not exist',
       };
     case SignOut: //remove this
       return {
+        ...state,
         isloading: false,
         islogging: false,
         users: [],
       };
+    case SignUp:
+      return {
+        ...state,
+        islogging: false,
+        isloading: false,
+        isSignup: true,
+        users: action.payload,
+        error: '',
+        msg: action?.payload?.message,
+        pswd: action?.payload?.password,
+      };
+    case fetch_Users_Signup_COMPLETE:
+      return {
+        ...state,
+        isSignup: false,
+      };
+
     default:
       return state;
   }

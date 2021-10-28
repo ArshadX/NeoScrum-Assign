@@ -9,9 +9,9 @@ class DrawerContent extends Component {
     super(props);
     this.state = {
       img: this.props.pro,
+      Active: this.navigation,
     };
   }
-
   render() {
     return (
       <View style={styles.drawerContent}>
@@ -32,21 +32,28 @@ class DrawerContent extends Component {
               </View>
             </View>
             <Drawer.Section style={styles.drawerSection}>
-              <DrawerItem
+              <Drawer.Item
                 icon={({color, size}) => (
                   <MaterialIcons name="home" color={color} size={size} />
                 )}
                 label="Home"
-                onPress={() => this.props.navigation.navigate('HomeScreen')}
+                onPress={() => {
+                  this.setState({Active: 'first'});
+                  this.props.navigation.navigate('HomeScreen');
+                }}
+                active={this.state.Active == 'first'}
+                activeTintColor="blue"
               />
-              <DrawerItem
+              <Drawer.Item
                 icon={({color, size}) => (
                   <MaterialIcons name="forum" color={color} size={size} />
                 )}
                 label="Feedback"
                 onPress={() => {
+                  this.setState({Active: 'second'});
                   this.props.navigation.navigate('FeedbackScreen');
                 }}
+                active={this.state.Active == 'second'}
               />
             </Drawer.Section>
           </View>

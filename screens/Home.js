@@ -1,29 +1,14 @@
 import React, {Component} from 'react';
-import axios from 'axios';
 import {
   View,
   Text,
-  TouchableOpacity,
-  TextInput,
-  Platform,
   StyleSheet,
   StatusBar,
-  Alert,
-  Button,
   SafeAreaView,
-  ScrollView,
   FlatList,
 } from 'react-native';
-import {
-  Avatar,
-  Title,
-  Caption,
-  Paragraph,
-  TouchableRipple,
-  Switch,
-  Card,
-} from 'react-native-paper';
-import {connect, connectAdvanced} from 'react-redux';
+import {Card} from 'react-native-paper';
+import {connect} from 'react-redux';
 
 const Cardfeed = ({feedBack, name, date}) => (
   <View style={styles.flatList}>
